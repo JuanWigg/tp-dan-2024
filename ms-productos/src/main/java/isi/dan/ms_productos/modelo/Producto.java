@@ -29,6 +29,8 @@ public class Producto {
     @NotNull
     private BigDecimal precio;
     
+    private float descuento;
+    
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORIA")
     private Categoria categoria;
