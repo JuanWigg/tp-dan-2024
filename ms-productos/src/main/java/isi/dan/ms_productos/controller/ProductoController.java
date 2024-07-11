@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 import isi.dan.ms_productos.aop.LogExecutionTime;
+import isi.dan.ms_productos.dto.StockProvisionDTO;
 import isi.dan.ms_productos.exception.ProductoNotFoundException;
 import isi.dan.ms_productos.modelo.Producto;
 import isi.dan.ms_productos.servicio.EchoClientFeign;
@@ -70,6 +71,13 @@ public class ProductoController {
     @LogExecutionTime
     public ResponseEntity<Void> deleteProducto(@PathVariable Long id) {
         productoService.deleteProducto(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/stock-provision")
+    @LogExecutionTime
+    public ResponseEntity<Void> stockProvision(@RequestBody StockProvisionDTO stockProvision) throws ProductoNotFoundException {
+        productoService.stockProvision(stockProvision);
         return ResponseEntity.noContent().build();
     }
 }

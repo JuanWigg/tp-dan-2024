@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import isi.dan.ms_productos.conf.RabbitMQConfig;
 import isi.dan.ms_productos.dao.ProductoRepository;
+import isi.dan.ms_productos.dto.StockProvisionDTO;
 import isi.dan.ms_productos.exception.ProductoNotFoundException;
 import isi.dan.ms_productos.modelo.Producto;
 
@@ -44,6 +45,13 @@ public class ProductoService {
 
     public void deleteProducto(Long id) {
         productoRepository.deleteById(id);
+    }
+
+    public void stockProvision(StockProvisionDTO stockProvision) throws ProductoNotFoundException {
+        Producto producto = productoRepository.findById(stockProvision.getIdProducto()).orElseThrow(() -> new ProductoNotFoundException(stockProvision.getIdProducto()));
+        producto.setStockActual(producto.getStockActual() + stockProvision.getCantidad());
+        producto.setPrecio(stockProvision.getPrecio());
+        productoRepository.save(producto);
     }
 }
 
