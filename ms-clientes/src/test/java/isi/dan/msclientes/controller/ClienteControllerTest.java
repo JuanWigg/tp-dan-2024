@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -38,6 +39,8 @@ public class ClienteControllerTest {
         cliente.setNombre("Test Cliente");
         cliente.setCorreoElectronico("test@cliente.com");
         cliente.setCuit("12998887776");
+        cliente.setMaximoDescubierto(BigDecimal.valueOf(10000));
+        cliente.setMaximoObrasEjecucion(Integer.valueOf(1));
     }
 
     @Test

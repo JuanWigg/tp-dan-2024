@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -23,14 +24,19 @@ public class Obra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
+    @NotBlank(message = "La dirección es obligatoria")
     private String direccion;
 
     @Column(name = "ES_REMODELACION")
     private Boolean esRemodelacion;
     
-    private float lat;
+    @NotNull(message = "La latitud es obligatoria")
+    private double lat;
     
-    private float lng;
+    @NotNull(message = "La longitud es obligatoria")
+    private double lng;
+
+    private EstadoObra estado;
     
     @ManyToOne
     @JoinColumn(name = "ID_CLIENTE")

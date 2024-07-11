@@ -12,7 +12,6 @@ import isi.dan.msclientes.aop.LogExecutionTime;
 import isi.dan.msclientes.exception.ClienteNotFoundException;
 import isi.dan.msclientes.model.Cliente;
 import isi.dan.msclientes.servicios.ClienteService;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.Instant;
 import java.util.List;
