@@ -40,11 +40,11 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
-    public Producto getProductoById(Long id) throws ProductoNotFoundException{
+    public Producto getProductoById(Integer id) throws ProductoNotFoundException{
         return productoRepository.findById(id).orElseThrow(() -> new ProductoNotFoundException(id));
     }
 
-    public void deleteProducto(Long id) {
+    public void deleteProducto(Integer id) {
         productoRepository.deleteById(id);
     }
 

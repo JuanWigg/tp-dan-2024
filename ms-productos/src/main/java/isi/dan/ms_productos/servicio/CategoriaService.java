@@ -26,11 +26,11 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
-    public Categoria getCategoriaById(Long id) throws CategoriaNotFoundException {
+    public Categoria getCategoriaById(Integer id) throws CategoriaNotFoundException {
         return categoriaRepository.findById(id).orElseThrow(() -> new CategoriaNotFoundException(id));
     }
 
-    public void deleteCategoria(Long id) {
+    public void deleteCategoria(Integer id) {
         categoriaRepository.deleteById(id);
     }
 }

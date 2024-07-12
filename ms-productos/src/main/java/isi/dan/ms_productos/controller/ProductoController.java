@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 import isi.dan.ms_productos.aop.LogExecutionTime;
+import isi.dan.ms_productos.dto.DiscountUpdateDTO;
 import isi.dan.ms_productos.dto.StockProvisionDTO;
 import isi.dan.ms_productos.exception.ProductoNotFoundException;
 import isi.dan.ms_productos.modelo.Producto;
@@ -63,13 +64,13 @@ public class ProductoController {
 
     @GetMapping("/{id}")
     @LogExecutionTime
-    public ResponseEntity<Producto> getProductoById(@PathVariable Long id) throws ProductoNotFoundException {
+    public ResponseEntity<Producto> getProductoById(@PathVariable Integer id) throws ProductoNotFoundException {
         return  ResponseEntity.ok(productoService.getProductoById(id));
     }
 
     @DeleteMapping("/{id}")
     @LogExecutionTime
-    public ResponseEntity<Void> deleteProducto(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProducto(@PathVariable Integer id) {
         productoService.deleteProducto(id);
         return ResponseEntity.noContent().build();
     }
@@ -78,6 +79,13 @@ public class ProductoController {
     @LogExecutionTime
     public ResponseEntity<Void> stockProvision(@RequestBody StockProvisionDTO stockProvision) throws ProductoNotFoundException {
         productoService.stockProvision(stockProvision);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update-discount")
+    @LogExecutionTime
+    public ResponseEntity<Void> updateDiscount(@RequestBody DiscountUpdateDTO discountUpdate) throws ProductoNotFoundException {
+        productoService.updateDiscount(discountUpdate);
         return ResponseEntity.noContent().build();
     }
 }

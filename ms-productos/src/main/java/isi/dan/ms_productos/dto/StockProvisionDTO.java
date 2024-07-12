@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class StockProvisionDTO {
-    private Long idProducto;
+    private Integer idProducto;
     private Integer cantidad;
     private BigDecimal precio;
 }

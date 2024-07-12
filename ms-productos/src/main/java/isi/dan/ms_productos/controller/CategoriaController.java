@@ -44,13 +44,13 @@ public class CategoriaController {
 
     @GetMapping("/{id}")
     @LogExecutionTime
-    public ResponseEntity<Categoria> getCategoriaById(@PathVariable Long id) throws CategoriaNotFoundException {
+    public ResponseEntity<Categoria> getCategoriaById(@PathVariable Integer id) throws CategoriaNotFoundException {
         return  ResponseEntity.ok(categoriaService.getCategoriaById(id));
     }
 
     @DeleteMapping("/{id}")
     @LogExecutionTime
-    public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCategoria(@PathVariable Integer id) {
         categoriaService.deleteCategoria(id);
         return ResponseEntity.noContent().build();
     }

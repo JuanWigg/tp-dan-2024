@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DiscountUpdateDTO {
-    private Long idProducto;
+    private Integer idProducto;
     private float descuento;
 }
