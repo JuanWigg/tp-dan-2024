@@ -28,11 +28,14 @@ public class ProductoService {
     Logger log = LoggerFactory.getLogger(ProductoService.class);
 
     @RabbitListener(queues = RabbitMQConfig.STOCK_UPDATE_QUEUE)
-    public void handleCancellation(Message msg) {
-        log.info("Recibido {}", msg);
-        // buscar el producto
-        // actualizar el stock
-        // verificar el punto de pedido y generar un pedido
+    @Transactional(rollbackFor = { ProductoNotFoundException.class })
+    public void handleCancellation(PedidoDTO pedidoCancelado) throws ProductoNotFoundException {
+        log.info("Recibido {}", pedidoCancelado);
+        for(StockUpdateDTO stockUpdate : pedidoCancelado.getProductos()) {
+            Producto producto = productoRepository.findById(stockUpdate.getIdProducto()).orElseThrow(() -> new ProductoNotFoundException(stockUpdate.getIdProducto()));
+            producto.setStockActual(producto.getStockActual() + stockUpdate.getCantidad());
+            productoRepository.save(producto);
+        }
     }
 
 
