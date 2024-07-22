@@ -27,7 +27,7 @@ public class ProductoService {
 
     Logger log = LoggerFactory.getLogger(ProductoService.class);
 
-    @RabbitListener(queues = RabbitMQConfig.STOCK_UPDATE_QUEUE)
+    @RabbitListener(queues = RabbitMQConfig.ORDER_CANCELLATIONS_QUEUE, messageConverter = "jsonMessageConverter")
     @Transactional(rollbackFor = { ProductoNotFoundException.class })
     public void handleCancellation(PedidoDTO pedidoCancelado) throws ProductoNotFoundException {
         log.info("Recibido {}", pedidoCancelado);
