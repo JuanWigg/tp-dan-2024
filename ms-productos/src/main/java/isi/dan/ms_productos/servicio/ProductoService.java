@@ -6,12 +6,16 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import isi.dan.ms_productos.conf.RabbitMQConfig;
 import isi.dan.ms_productos.dao.ProductoRepository;
 import isi.dan.ms_productos.dto.DiscountUpdateDTO;
+import isi.dan.ms_productos.dto.PedidoDTO;
 import isi.dan.ms_productos.dto.StockProvisionDTO;
+import isi.dan.ms_productos.dto.StockUpdateDTO;
 import isi.dan.ms_productos.exception.ProductoNotFoundException;
+import isi.dan.ms_productos.exception.StockInsuficienteException;
 import isi.dan.ms_productos.modelo.Producto;
 
 import java.util.List;
@@ -20,10 +24,11 @@ import java.util.List;
 public class ProductoService {
     @Autowired
     private ProductoRepository productoRepository;
+
     Logger log = LoggerFactory.getLogger(ProductoService.class);
 
     @RabbitListener(queues = RabbitMQConfig.STOCK_UPDATE_QUEUE)
-    public void handleStockUpdate(Message msg) {
+    public void handleCancellation(Message msg) {
         log.info("Recibido {}", msg);
         // buscar el producto
         // actualizar el stock
@@ -33,6 +38,12 @@ public class ProductoService {
 
 
     public Producto saveProducto(Producto producto) {
+        if(producto.getStockActual() == null) {
+            producto.setStockActual(0);
+        }
+        if(producto.getDescuento() == null) {
+            producto.setDescuento(0.0f);
+        }
         return productoRepository.save(producto);
     }
 
@@ -59,6 +70,20 @@ public class ProductoService {
         Producto producto = productoRepository.findById(updateDiscount.getIdProducto()).orElseThrow(() -> new ProductoNotFoundException(updateDiscount.getIdProducto()));
         producto.setDescuento(updateDiscount.getDescuento());
         productoRepository.save(producto);
+    }
+
+    @Transactional(rollbackFor = {ProductoNotFoundException.class, StockInsuficienteException.class})
+    public boolean makeOrder(PedidoDTO pedido) throws ProductoNotFoundException, StockInsuficienteException {
+        for(StockUpdateDTO stockUpdate : pedido.getProductos()) {
+            Producto producto = productoRepository.findById(stockUpdate.getIdProducto()).orElseThrow(() -> new ProductoNotFoundException(stockUpdate.getIdProducto()));
+            producto.setStockActual(producto.getStockActual() - stockUpdate.getCantidad());
+            if(producto.getStockActual() < 0) {
+                throw new StockInsuficienteException(producto.getId());
+            }
+            productoRepository.save(producto);
+        }
+
+        return true;
     }
 }
 

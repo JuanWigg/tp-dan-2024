@@ -20,16 +20,17 @@ public class Producto {
     private String descripcion;
 
     @Column(name ="STOCK_ACTUAL")
-    private int stockActual;
+    private Integer stockActual;
 
     @Column(name ="STOCK_MINIMO")
     @NotNull
-    private int stockMinimo;
+    private Integer stockMinimo;
 
     @NotNull
     private BigDecimal precio;
     
-    private float descuento;
+    @Column(name ="DESCUENTO")
+    private Float descuento;
     
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORIA")

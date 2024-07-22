@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class DiscountUpdateDTO {
     private Integer idProducto;
-    private float descuento;
+    private Float descuento;
 }
