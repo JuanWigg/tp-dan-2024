@@ -11,9 +11,6 @@ public class DetallePedido {
     @Field("producto")
     private Producto producto;
     private Integer cantidad;
-    private BigDecimal precioUnitario;
     private BigDecimal descuento;
-    private BigDecimal precioFinal;
-
-
+    private BigDecimal total;
 }

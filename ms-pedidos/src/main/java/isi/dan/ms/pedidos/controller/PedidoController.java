@@ -7,6 +7,10 @@ import isi.dan.ms.pedidos.modelo.Pedido;
 import isi.dan.ms.pedidos.servicio.PedidoService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/api/pedidos")
@@ -30,6 +34,17 @@ public class PedidoController {
     public ResponseEntity<Pedido> getPedidoById(@PathVariable String id) {
         Pedido pedido = pedidoService.getPedidoById(id);
         return pedido != null ? ResponseEntity.ok(pedido) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/clientes/{id}")
+    public List<Pedido> getPedidosByCliente(@PathVariable Integer id) {
+        return pedidoService.getPedidosByCliente(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Pedido> updatePedido(@PathVariable String id, @RequestBody Pedido pedido) {
+        Pedido updatedPedido = pedidoService.updatePedido(id, pedido);
+        return ResponseEntity.ok(updatedPedido);
     }
 
     @DeleteMapping("/{id}")
