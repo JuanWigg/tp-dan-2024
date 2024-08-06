@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "MS_PRD_PRODUCTO")
@@ -12,17 +11,29 @@ import java.util.List;
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+
     @NotNull
     private String nombre;
+
+    @NotNull
     private String descripcion;
+
     @Column(name ="STOCK_ACTUAL")
-    private int stockActual;
+    private Integer stockActual;
+
     @Column(name ="STOCK_MINIMO")
-    private int stockMinimo;
+    @NotNull
+    private Integer stockMinimo;
+
+    @NotNull
     private BigDecimal precio;
     
-    @Enumerated(EnumType.STRING)
+    @Column(name ="DESCUENTO")
+    private Float descuento;
+    
+    @ManyToOne
+    @JoinColumn(name = "ID_CATEGORIA")
     private Categoria categoria;
 
 }
