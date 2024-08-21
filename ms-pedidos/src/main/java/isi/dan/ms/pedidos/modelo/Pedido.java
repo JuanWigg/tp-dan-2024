@@ -15,11 +15,15 @@ public class Pedido {
     @Id
     private String id;
     private Instant fecha;
-    private Integer numeroPedido;
+    private Long numeroPedido;
     private String usuario;
     private String observaciones;
 
     private Cliente cliente;
+    private Obra obra;
+    private List<HistorialEstado> historialEstados;
+    EstadoPedido estado;
+    
     private BigDecimal total;
 
     @Field("detalle")

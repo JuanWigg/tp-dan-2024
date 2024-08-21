@@ -16,6 +16,9 @@ import isi.dan.msclientes.servicios.ClienteService;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -75,5 +78,17 @@ public class ClienteController {
         clienteService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/verificarMaximoDescubierto")
+    public ResponseEntity<Void> verificarMaximoDescubierto(@PathVariable Integer id, @RequestParam(required = true) Double total) throws ClienteNotFoundException{
+        if (!clienteService.findById(id).isPresent()) {
+            throw new ClienteNotFoundException("Cliente "+id+" no encontrado para borrar");
+        }
+        if (clienteService.verificarMaximoDescubierto(id, total))
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.badRequest().build();
+    }
+    
 }
 
