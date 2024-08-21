@@ -4,8 +4,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import isi.dan.ms.pedidos.conf.RabbitMQConfig;
 import isi.dan.ms.pedidos.dao.PedidoRepository;
+import isi.dan.ms.pedidos.dto.PedidoDTO;
+import isi.dan.ms.pedidos.dto.StockUpdateDTO;
 import isi.dan.ms.pedidos.modelo.DetallePedido;
 import isi.dan.ms.pedidos.modelo.EstadoPedido;
 import isi.dan.ms.pedidos.modelo.HistorialEstado;
@@ -29,34 +30,84 @@ public class PedidoService {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private ProductoService productoService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    private String exchange = "order-cancellations-exchange";
+
+    private String routingJsonKey = "order-cancellations-routing-json-key";
+
     Logger log = LoggerFactory.getLogger(PedidoService.class);
 
+    private void cancelarPedido(Pedido pedido) {
+        PedidoDTO pedidoACancelar = new PedidoDTO();
+        pedidoACancelar.setProductos(new ArrayList<StockUpdateDTO>());
+        pedido.getDetalle().forEach((DetallePedido detalle) -> {
+            StockUpdateDTO newStock = new StockUpdateDTO();
+            newStock.setCantidad(detalle.getCantidad());
+            newStock.setIdProducto(detalle.getProducto().getId());
+            pedidoACancelar.getProductos().add(newStock);
+        } );
+
+        rabbitTemplate.convertAndSend(exchange, routingJsonKey, pedidoACancelar);
+    }
 
     public Pedido savePedido(Pedido pedido) {
         log.info("Verificando antes de hacer el pedido");
         pedido.setFecha(Instant.now());
         pedido.setNumeroPedido(Long.valueOf(sequenceGeneratorService.generateSequence("pedidos")));
 
+        pedido.getDetalle().forEach((DetallePedido detalle) -> {
+            if(detalle.getDescuento() == null) {
+                detalle.setDescuento(new BigDecimal(0.00));
+            }
+            detalle.setTotal(detalle.getProducto().getPrecio()
+                .multiply(BigDecimal.valueOf(detalle.getCantidad())));
+            detalle.setTotal(detalle.getTotal().subtract(detalle.getTotal().multiply(detalle.getDescuento())));
+        });
+
+
         pedido.setTotal(pedido.getDetalle().stream().map(DetallePedido::getTotal).reduce((a, b) -> a.add(b)).orElse(null));
 
         pedido.setHistorialEstados(new ArrayList<HistorialEstado>());
         HistorialEstado historial = new HistorialEstado();
-        historial.setFechaEstado(pedido.getFecha());
         historial.setUserEstado(pedido.getUsuario());
 
-        BigDecimal totalPedidosCliente = pedidoRepository.findByCliente_Id(pedido.getCliente().getId()).stream()
-                .map(Pedido::getTotal).reduce((a, b) -> a.add(b)).orElse(null);
-        // Verificar con el microservicios de clientes que el máximo descubierto no se exceda
-        if (clienteService.verificarMaximoDescubierto(totalPedidosCliente)) {
-            pedido.setEstado(EstadoPedido.ACEPTADO);
-            historial.setEstado(EstadoPedido.ACEPTADO);
-            historial.setDetalle("Cliente  cuenta con máximo descubierto");
-        } else {
-            pedido.setEstado(EstadoPedido.RECHAZADO);
-            historial.setEstado(EstadoPedido.RECHAZADO);
-            historial.setDetalle("Cliente no cuenta con máximo descubierto");
+        List<EstadoPedido> estadosASumar = new ArrayList<EstadoPedido>();
+        estadosASumar.add(EstadoPedido.ACEPTADO);
+        estadosASumar.add(EstadoPedido.EN_PREPARACION);
+        BigDecimal totalPedidosCliente = new BigDecimal(0);
+        for(Pedido p : pedidoRepository.findByEstadoInAndCliente_Id(estadosASumar, pedido.getCliente().getId())) {
+            totalPedidosCliente = totalPedidosCliente.add(p.getTotal());
         }
+        totalPedidosCliente = totalPedidosCliente.add(pedido.getTotal());
+        if (clienteService.verificarMaximoDescubierto(totalPedidosCliente, pedido.getCliente().getId())) 
+            pedido.setEstado(EstadoPedido.ACEPTADO);
+        else
+            pedido.setEstado(EstadoPedido.RECHAZADO);
+
+        historial.setEstado(pedido.getEstado());
+        historial.setFechaEstado(Instant.now());
+        historial.setDetalle(historial.getEstado() == EstadoPedido.ACEPTADO ?
+            "Cliente cuenta con máximo descubierto suficiente" :
+            "Cliente no cuenta con máximo descubierto suficiente");
         pedido.getHistorialEstados().add(historial);
+
+        if(pedido.getEstado() == EstadoPedido.ACEPTADO) {
+            if (productoService.verificarStockProductos(pedido)){
+                HistorialEstado historialStock = new HistorialEstado();
+                historialStock.setUserEstado("PEDIDOS_SERVICE");
+                pedido.setEstado(EstadoPedido.EN_PREPARACION);
+                historialStock.setEstado(pedido.getEstado());
+                historialStock.setFechaEstado(Instant.now());
+                historialStock.setDetalle("Stock suficiente para los productos solicitados");
+                pedido.getHistorialEstados().add(historialStock);
+            }
+        }
+
         return pedidoRepository.save(pedido);
     }
 
@@ -78,6 +129,20 @@ public class PedidoService {
 
     public Pedido updatePedido(String id, Pedido pedido) {
         pedido.setId(id);
+
+        if (pedido.getEstado() != pedido.getHistorialEstados().getLast().getEstado()) {
+            HistorialEstado historial = new HistorialEstado();
+            historial.setFechaEstado(Instant.now());
+            historial.setUserEstado(pedido.getUsuario());
+            historial.setEstado(pedido.getEstado());
+            historial.setDetalle("Cambio de estado manual");
+            pedido.getHistorialEstados().add(historial);
+        }
+
+        if (pedido.getEstado() == EstadoPedido.CANCELADO) {
+            cancelarPedido(pedido);
+        }
+
         return pedidoRepository.save(pedido);
     }
 }
