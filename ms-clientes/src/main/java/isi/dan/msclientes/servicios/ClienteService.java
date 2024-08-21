@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import isi.dan.msclientes.dao.ClienteRepository;
+import isi.dan.msclientes.exception.ClienteNotFoundException;
 import isi.dan.msclientes.model.Cliente;
 
 import java.math.BigDecimal;
@@ -41,5 +42,13 @@ public class ClienteService {
 
     public void deleteById(Integer id) {
         clienteRepository.deleteById(id);
+    }
+
+    public boolean verificarMaximoDescubierto(Integer id, Double total) throws ClienteNotFoundException {
+        Optional<Cliente> cliente = clienteRepository.findById(id);
+        if (cliente.isPresent()) {
+            return cliente.get().getMaximoDescubierto().compareTo(BigDecimal.valueOf(total)) >= 0 ? true : false;
+        }
+        throw new ClienteNotFoundException("Cliente " + id + " no encontrado");
     }
 }

@@ -46,6 +46,8 @@ services:
       SPRING_DATA_MONGODB_URL: mongodb://root:dan@mongo-dan:27017/pedidosdb?authSource=admin
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
+      PRODUCTOS_BASE_URL: http://ms-productos-ms-productos-svc-1-1:8080/api
+      CLIENTES_BASE_URL: http://ms-clientes-ms-clientes-svc-1-1:8080/api
     ports:
       - "6280:8080"
     depends_on:
