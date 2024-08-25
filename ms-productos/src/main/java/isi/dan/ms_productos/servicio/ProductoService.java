@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import isi.dan.ms_productos.conf.RabbitMQConfig;
 import isi.dan.ms_productos.dao.ProductoRepository;
 import isi.dan.ms_productos.dto.DiscountUpdateDTO;
+import isi.dan.ms_productos.dto.FiltersDTO;
 import isi.dan.ms_productos.dto.PedidoDTO;
 import isi.dan.ms_productos.dto.StockProvisionDTO;
 import isi.dan.ms_productos.dto.StockUpdateDTO;
@@ -18,6 +19,7 @@ import isi.dan.ms_productos.exception.ProductoNotFoundException;
 import isi.dan.ms_productos.exception.StockInsuficienteException;
 import isi.dan.ms_productos.modelo.Producto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -54,8 +56,38 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
+    public List<Producto> searchProductos(FiltersDTO filters) {
+        List<Producto> productos = productoRepository.findAll();
+        if(filters.getNombre() != null) {
+            productos.removeIf(producto -> !producto.getNombre().contains(filters.getNombre()));
+        }
+
+        if(filters.getPriceMin() != null) {
+            productos.removeIf(producto -> producto.getPrecio().compareTo(BigDecimal.valueOf(filters.getPriceMin())) < 0);
+        }
+
+        if(filters.getPriceMax() != null) {
+            productos.removeIf(producto -> producto.getPrecio().compareTo(BigDecimal.valueOf(filters.getPriceMax())) > 0);
+        }
+
+        if(filters.getStockMin() != null) {
+            productos.removeIf(producto -> producto.getStockActual() < filters.getStockMin());
+        }
+
+        if(filters.getStockMax() != null) {
+            productos.removeIf(producto -> producto.getStockActual() > filters.getStockMax());
+        }
+
+        return productos;
+    }
+
     public Producto getProductoById(Integer id) throws ProductoNotFoundException{
         return productoRepository.findById(id).orElseThrow(() -> new ProductoNotFoundException(id));
+    }
+    
+    public Producto updateProducto(Integer id, Producto producto) {
+        producto.setId(id);
+        return productoRepository.save(producto);
     }
 
     public void deleteProducto(Integer id) {

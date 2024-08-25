@@ -2,8 +2,9 @@ import ClienteCard from "@/components/ClienteCard"
 import SearchBar from "@/components/SearchBar"
 
 async function getClients() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users')
+    const response = await fetch(`${process.env.GATEWAY_BASE_URL}/clientes`)
     const data = await response.json()
+    console.log(data)
     return data
 }
 
