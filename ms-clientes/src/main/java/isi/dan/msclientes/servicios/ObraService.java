@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import isi.dan.msclientes.dao.ObraRepository;
+import isi.dan.msclientes.dto.ObraFiltersDTO;
 import isi.dan.msclientes.model.Cliente;
 import isi.dan.msclientes.model.EstadoObra;
 import isi.dan.msclientes.model.Obra;
@@ -22,6 +23,17 @@ public class ObraService {
 
     public List<Obra> findAll() {
         return obraRepository.findAll();
+    }
+
+    public List<Obra> searchObras(ObraFiltersDTO filters) {
+        List<Obra> obras = obraRepository.findAll();
+        if (filters.getCliente() != null) {
+            obras.removeIf(obra -> !obra.getCliente().getNombre().contains(filters.getCliente()));
+        }
+        if (filters.getDireccion() != null) {
+            obras.removeIf(obra -> !obra.getDireccion().contains(filters.getDireccion()));
+        }
+        return obras;
     }
 
     public Optional<Obra> findById(Integer id) {

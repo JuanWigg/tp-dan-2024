@@ -23,7 +23,7 @@ public class SequenceGeneratorService {
     public long generateSequence(String seqName) {
         CollectionSeq counter = mongoOperations.findAndModify(
                 query(where("_id").is(seqName)),
-                new Update().inc("seq", 1),
+                new Update().inc("current", 1),
                 FindAndModifyOptions.options().returnNew(true).upsert(true),
                 CollectionSeq.class);
         return !Objects.isNull(counter) ? counter.getCurrent() : 1;

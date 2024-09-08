@@ -10,6 +10,9 @@ services:
       dockerfile: Dockerfile
     environment:
       SPRING_EUREKA_DEFAULT_ZONE: http://ms-eureka-svc:8761/eureka/
+      CLIENTES_SERVICE_URL: http://ms-clientes-ms-clientes-svc-1-1:8080
+      PRODUCTOS_SERVICE_URL: http://ms-productos-ms-productos-svc-1-1:8080
+      PEDIDOS_SERVICE_URL: http://ms-pedidos-svc:8080
     ports:
       - "3080:8080"
     networks:

@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import isi.dan.ms_productos.aop.LogExecutionTime;
 import isi.dan.ms_productos.dto.DiscountUpdateDTO;
+import isi.dan.ms_productos.dto.FiltersDTO;
 import isi.dan.ms_productos.dto.PedidoDTO;
 import isi.dan.ms_productos.dto.StockProvisionDTO;
 import isi.dan.ms_productos.exception.ProductoNotFoundException;
@@ -63,7 +64,22 @@ public class ProductoController {
 
     @GetMapping
     @LogExecutionTime
-    public List<Producto> getAllProductos() {
+    public List<Producto> getAllProductos(
+        @RequestParam(required = false) String nombre, 
+        @RequestParam(required = false) Float priceMin,
+        @RequestParam(required = false) Float priceMax,
+        @RequestParam(required = false) Integer stockMin,
+        @RequestParam(required = false) Integer stockMax
+    ) {
+        if(nombre != null || priceMin != null || priceMax != null || stockMin != null || stockMax != null) {
+            FiltersDTO  filters = new FiltersDTO();
+            filters.setNombre(nombre);
+            filters.setPriceMin(priceMin);
+            filters.setPriceMax(priceMax);
+            filters.setStockMin(stockMin);
+            filters.setStockMax(stockMax);
+            return productoService.searchProductos(filters);
+        }
         return productoService.getAllProductos();
     }
 
@@ -72,6 +88,14 @@ public class ProductoController {
     public ResponseEntity<Producto> getProductoById(@PathVariable Integer id) throws ProductoNotFoundException {
         return  ResponseEntity.ok(productoService.getProductoById(id));
     }
+
+    @PutMapping("/{id}")
+    @LogExecutionTime
+    public ResponseEntity<Producto> updateProducto(@PathVariable Integer id, @RequestBody Producto producto) throws ProductoNotFoundException {
+        Producto updatedProducto = productoService.updateProducto(id, producto);
+        return ResponseEntity.ok(updatedProducto);
+    }
+
 
     @DeleteMapping("/{id}")
     @LogExecutionTime
