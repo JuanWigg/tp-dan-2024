@@ -1,10 +1,11 @@
-function DeleteModal({ entidad, isOpen, onDelete, onClose}) {
+function DeleteModal({ entidad, trato, mensajeAdicional, isOpen, onDelete, onClose}) {
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-4 rounded shadow-lg">
                 <h2 className="text-2xl mb-4">Eliminar {entidad}</h2>
-                <p>¿Estás seguro de que deseas eliminar este {entidad}?</p>
+                <p>¿Estás seguro de que deseas eliminar {trato ? trato : 'este'} {entidad}?</p>
+                {mensajeAdicional && <p>{mensajeAdicional}</p>}
                 <div className="flex justify-end gap-4 mt-4">
                     <button
                         type="button"

@@ -2,15 +2,13 @@ import Link from "next/link"
 
 function ClienteCard({ cliente }) {
   return (
-    <div>
-        <Link href={`/clientes/${cliente.id}`}>
-            <div className='p-4 bg-blue-800 text-slate-300 rounded-md'>
-                <h3 className='text-xl font-bold'>{cliente.nombre}</h3>
-                <p className='text-sm'>{cliente.correoElectronico}</p>
-                <p className='text-sm'>{cliente.cuit}</p>
-            </div>
-        </Link>
-    </div>
+    <Link href={`/clientes/${cliente.id}`}>
+      <div className='bg-gray-800 text-gray-300 rounded-lg shadow-lg p-4 hover:bg-gray-700 transition-colors'>
+        <h3 className='text-xl font-semibold mb-1'>{cliente.nombre}</h3>
+        <p className='text-sm mb-1'>{cliente.correoElectronico}</p>
+        <p className='text-sm'>{cliente.cuit}</p>
+      </div>
+    </Link>
   )
 }
 

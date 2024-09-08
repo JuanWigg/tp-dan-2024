@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import isi.dan.msclientes.aop.LogExecutionTime;
+import isi.dan.msclientes.dto.ClienteFiltersDTO;
 import isi.dan.msclientes.exception.ClienteNotFoundException;
 import isi.dan.msclientes.model.Cliente;
 import isi.dan.msclientes.servicios.ClienteService;
@@ -16,8 +17,6 @@ import isi.dan.msclientes.servicios.ClienteService;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -35,7 +34,18 @@ public class ClienteController {
 
     @GetMapping
     @LogExecutionTime
-    public List<Cliente> getAll() {
+    public List<Cliente> getAll(
+        @RequestParam(required = false) String nombre, 
+        @RequestParam(required = false) String cuit,
+        @RequestParam(required = false) String correoElectronico
+    ) {
+        if (nombre != null || cuit != null || correoElectronico != null) {
+            ClienteFiltersDTO filters = new ClienteFiltersDTO();
+            filters.setNombre(nombre);
+            filters.setCuit(cuit);
+            filters.setCorreoElectronico(correoElectronico);
+            return clienteService.searchClient(filters);
+        }
         return clienteService.findAll();
     }
     

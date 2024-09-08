@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request) {
     const searchParams = request.nextUrl.searchParams
-    console.log(searchParams.toString())
     const response = await fetch(`${process.env.GATEWAY_BASE_URL}/productos?${searchParams.toString()}`)
     const data = await response.json()
     return NextResponse.json(data)

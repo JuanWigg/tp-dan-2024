@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import isi.dan.ms.pedidos.dao.PedidoRepository;
 import isi.dan.ms.pedidos.dto.PedidoDTO;
+import isi.dan.ms.pedidos.dto.PedidoFiltersDTO;
 import isi.dan.ms.pedidos.dto.StockUpdateDTO;
 import isi.dan.ms.pedidos.modelo.DetallePedido;
 import isi.dan.ms.pedidos.modelo.EstadoPedido;
@@ -113,6 +114,17 @@ public class PedidoService {
 
     public List<Pedido> getAllPedidos() {
         return pedidoRepository.findAll();
+    }
+
+    public List<Pedido> searchPedidos(PedidoFiltersDTO filters) {
+        List<Pedido> pedidos = pedidoRepository.findAll();
+        if(filters.getCliente() != null) {
+            pedidos.removeIf(pedido -> !pedido.getCliente().getNombre().contains(filters.getCliente()));
+        }
+        if(EstadoPedido.contains(filters.getEstado())) {
+            pedidos.removeIf(pedido -> pedido.getEstado() != EstadoPedido.valueOf(filters.getEstado()));
+        }
+        return pedidos;
     }
 
     public Pedido getPedidoById(String id) {

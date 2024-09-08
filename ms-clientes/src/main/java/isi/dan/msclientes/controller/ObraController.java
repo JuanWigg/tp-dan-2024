@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import isi.dan.msclientes.aop.LogExecutionTime;
+import isi.dan.msclientes.dto.ObraFiltersDTO;
 import isi.dan.msclientes.model.Obra;
 import isi.dan.msclientes.servicios.ObraService;
 
@@ -20,7 +21,16 @@ public class ObraController {
 
     @GetMapping
     @LogExecutionTime
-    public List<Obra> getAll() {
+    public List<Obra> getAll(
+        @RequestParam(required = false) String cliente, 
+        @RequestParam(required = false) String direccion
+    ) {
+        if(cliente != null || direccion != null) {
+            ObraFiltersDTO filters = new ObraFiltersDTO();
+            filters.setCliente(cliente);
+            filters.setDireccion(direccion);
+            return obraService.searchObras(filters);
+        }
         return obraService.findAll();
     }
 

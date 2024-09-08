@@ -1,9 +1,19 @@
+'use client'
+
+import { useState, useEffect } from 'react';
+
 function EditPedidoModal({ pedido, isOpen, onClose, onSave }) {
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState('ENTREGADO');
+
+  const handleChangeEstadoSeleccionado = (e) => {
+    setEstadoSeleccionado(e.target.value);
+  }
+
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-4 rounded shadow-lg">
-        <h2 className="text-2xl mb-4">Editar Pedido</h2>
+        <h2 className="text-2xl mb-4">Editar estado de Pedido</h2>
         <form>
           <div className="mb-4">
             <label htmlFor="numeroPedido" className="block text-gray-700">
@@ -13,30 +23,23 @@ function EditPedidoModal({ pedido, isOpen, onClose, onSave }) {
               id="numeroPedido"
               type="text"
               defaultValue={pedido.numeroPedido}
-              className="border border-gray-300 rounded p-2 w-full"
+              disabled={true}
+              className="border border-gray-400 rounded p-2 w-full text-gray-400"
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="fecha" className="block text-gray-700">
-              Fecha:
+          <div className='mb-4'>
+            <label htmlFor="estado" className="block text-gray-700">
+              Estado:
             </label>
-            <input
-              id="fecha"
-              type="text"
-              defaultValue={pedido.fecha}
-              className="border border-gray-300 rounded p-2 w-full"
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="usuario" className="block text-gray-700">
-              Usuario:
-            </label>
-            <input
-              id="usuario"
-              type="text"
-              defaultValue={pedido.usuario}
-              className="border border-gray-300 rounded p-2 w-full"
-            />
+            <select
+              id="estado"
+              defaultValue={pedido.estado}
+              className="border border-gray-400 rounded p-2 w-full"
+              onChange={handleChangeEstadoSeleccionado}
+            >
+              <option value="ENTREGADO">Entregado</option>
+              <option value="CANCELADO">Cancelado</option>
+            </select>
           </div>
           {/* Agrega más campos según sea necesario */}
           <button

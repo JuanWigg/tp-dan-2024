@@ -10,8 +10,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Navbar />
-        <div className='bg-indigo-950'>
-          {children}
+        <div className='bg-gray-900 h-screen'>
+          <main> {children} </main> 
         </div>
       </body>
     </html>

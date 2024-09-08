@@ -1,5 +1,4 @@
-import { useRouter } from "next/navigation"
-
+import { useRouter } from 'next/navigation'
 
 function ProductoItem({ producto, onDelete, onEdit }) {
   const router = useRouter()
@@ -9,17 +8,25 @@ function ProductoItem({ producto, onDelete, onEdit }) {
   }
 
   return (
-      <tr className='text-gray-100 text-xl'>
-        <td> {producto.nombre} </td>
-        <td> {producto.descripcion} </td>
-        <td> {producto.categoria.nombre} </td>
-        <td> {producto.stockActual} </td>
-        <td className='flex gap-4 justify-end mr-2'>
-            <button className='bg-blue-500 text-white px-2 py-0 rounded-md my-1' onClick={ onViewProducto }> V </button>
-            <button className='bg-yellow-500 text-white px-2 py-0 rounded-md my-1' onClick={ () => onEdit({...producto, id: producto.id}) }> E </button>
-            <button className='bg-red-500 text-white px-2 py-0 rounded-md my-1' onClick={ () => onDelete(producto.id) }> D </button>
-        </td>
-      </tr>
+    <tr className='text-gray-200 text-sm hover:bg-gray-800'>
+      <td className='p-2'>{producto.nombre}</td>
+      <td className='p-2'>{producto.descripcion}</td>
+      <td className='p-2'>{producto.categoria.nombre}</td>
+      <td className='p-2'>{producto.stockActual}</td>
+      <td className='p-2'>
+        <div className='flex gap-2 justify-end'>
+          <button className='bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded-md' onClick={onViewProducto}>
+            Ver
+          </button>
+          <button className='bg-yellow-600 hover:bg-yellow-500 text-white px-2 py-1 rounded-md' onClick={() => onEdit(producto)}>
+            Editar
+          </button>
+          <button className='bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded-md' onClick={() => onDelete(producto.id)}>
+            Eliminar
+          </button>
+        </div>
+      </td>
+    </tr>
   )
 }
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import isi.dan.msclientes.dao.ClienteRepository;
+import isi.dan.msclientes.dto.ClienteFiltersDTO;
 import isi.dan.msclientes.exception.ClienteNotFoundException;
 import isi.dan.msclientes.model.Cliente;
 
@@ -23,6 +24,20 @@ public class ClienteService {
 
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
+    }
+
+    public List<Cliente> searchClient(ClienteFiltersDTO filters) {
+        List<Cliente> clientes = clienteRepository.findAll();
+        if (filters.getNombre() != null) {
+            clientes.removeIf(cliente -> !cliente.getNombre().contains(filters.getNombre()));
+        }
+        if (filters.getCuit() != null) {
+            clientes.removeIf(cliente -> !cliente.getCuit().contains(filters.getCuit()));
+        }
+        if (filters.getCorreoElectronico() != null) {
+            clientes.removeIf(cliente -> !cliente.getCorreoElectronico().contains(filters.getCorreoElectronico()));
+        }
+        return clientes;
     }
 
     public Optional<Cliente> findById(Integer id) {

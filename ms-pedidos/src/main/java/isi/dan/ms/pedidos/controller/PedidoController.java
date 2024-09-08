@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import isi.dan.ms.pedidos.dto.PedidoFiltersDTO;
 import isi.dan.ms.pedidos.modelo.Pedido;
 import isi.dan.ms.pedidos.servicio.PedidoService;
 
@@ -28,7 +29,16 @@ public class PedidoController {
     }
 
     @GetMapping
-    public List<Pedido> getAllPedidos() {
+    public List<Pedido> getAllPedidos(
+        @RequestParam(required = false) String cliente,
+        @RequestParam(required = false) String estado
+    ) {
+        if(cliente != null || estado != null) {
+            PedidoFiltersDTO filters = new PedidoFiltersDTO();
+            filters.setCliente(cliente);
+            filters.setEstado(estado);
+            return pedidoService.searchPedidos(filters);
+        }
         return pedidoService.getAllPedidos();
     }
 

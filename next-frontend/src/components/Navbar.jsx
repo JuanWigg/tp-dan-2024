@@ -2,13 +2,16 @@ import Link from "next/link"
 
 function Navbar() {
   return (
-    <div className='px-4 bg-violet-800 text-xl font-bold text-slate-300 flex justify-between'> 
+    <div className='px-4 bg-indigo-800 text-xl font-bold text-slate-300 flex justify-between'> 
             <div>
                 <Link href='/'>
                     <span className='inline-block p-4'>Home</span>
                 </Link>
             </div>
             <div>
+                <Link href='/obras'>
+                    <span className='inline-block p-4'>Obras</span>
+                </Link>
                 <Link href='/clientes'>
                     <span className='inline-block p-4'>Clientes</span>
                 </Link>
