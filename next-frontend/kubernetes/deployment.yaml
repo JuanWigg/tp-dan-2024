@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dan-frontend
+  namespace: dan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dan-frontend
+  template:
+    metadata:
+      labels:
+        app: dan-frontend
+    spec:
+      containers:
+        - name: dan-frontend
+          image: juanwigg/next-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+          - name: BASE_URL
+            value: "http://localhost:3000"
+          - name: GATEWAY_BASE_URL
+            value: "http://ms-gateway:80"

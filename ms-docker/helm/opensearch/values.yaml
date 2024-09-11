@@ -1,0 +1,22 @@
+singleNode: true
+replicas: 1
+resources:
+  requests:
+    cpu: "250m"
+    memory: "100Mi"
+image:
+  repository: "opensearchproject/opensearch"
+  tag: 2.5.0
+extraEnvs:
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: VasoibasDaanPGSa2102
+  - name: "OPENSEARCH_JAVA_OPTS"
+    value: "-Xms1g -Xmx1g"
+  - name: "discovery.type"
+    value: "single-node"
+  - name: "action.auto_create_index" 
+    value: "false"
+  - name: "plugins.security.ssl.http.enabled"
+    value: "false"
+  - name: "plugins.security.disabled"
+    value: "true"

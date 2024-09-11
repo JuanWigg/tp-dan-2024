@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-clientes
+  namespace: dan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-clientes
+  template:
+    metadata:
+      labels:
+        app: ms-clientes
+    spec:
+      containers:
+        - name: ms-clientes
+          image: juanwigg/ms-clientes-svc:latest
+          ports:
+            - containerPort: 8080
+          env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/dandb
+          - name: SPRING_DATASOURCE_USERNAME
+            value: danuser
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: danpassword
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: update
+          - name: SPRING_JPA_DATABASE_PLATFORM
+            value: org.hibernate.dialect.MySQL8Dialect
+          - name: SPRING_RABBITMQ_HOST
+            value: dan-rabbitmq.messaging.svc.cluster.local
+          - name: SPRING_RABBITMQ_PORT
+            value: "5672"
+          - name: SPRING_INSTANCIA
+            value: ms-clientes-svc-1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi

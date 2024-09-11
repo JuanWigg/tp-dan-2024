@@ -30,7 +30,7 @@ function EditProductoModal({ producto, isOpen, onClose, onSave }) {
   }, [producto]);
 
   useEffect(() => {
-    fetch('/api/categorias')
+    fetch('/api/categorias', { cache: 'no-cache'})
         .then((res) => res.json())
         .then((data) => {
             setCategorias(data);

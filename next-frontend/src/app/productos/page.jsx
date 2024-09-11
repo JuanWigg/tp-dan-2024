@@ -102,8 +102,6 @@ function ProductosPage() {
       .then((data) => setProductos(data))
   }
 
-  if (!productos.length) return <p>No se encontraron productos</p>
-
   return (
     <div className='h-screen p-5 bg-gray-900'>
       <div className='bg-gray-800 p-4 rounded-md mb-6'>

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-clientes
+  namespace: dan
+spec:
+  selector:
+    app: ms-clientes
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

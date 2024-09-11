@@ -1,0 +1,18 @@
+tags:
+  install-opensearch: false
+  install-mongodb: false
+graylog:
+  persistence:
+    size: 10Gi
+  resources:
+    limits:
+      cpu: "1"
+    requests:
+      cpu: "150m"
+      memory: "350Mi"
+  opensearch:
+    hosts: http://opensearch-cluster-master-headless.logging.svc.cluster.local:9200
+  mongodb:
+    uri: mongodb://mongodb.logging.svc.cluster.local:27017/graylog
+opensearch:
+  enabled: false

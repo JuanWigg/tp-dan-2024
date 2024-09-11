@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-gateway
+  namespace: dan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-gateway
+  template:
+    metadata:
+      labels:
+        app: ms-gateway
+    spec:
+      containers:
+        - name: ms-gateway
+          image: juanwigg/ms-gateway-svc:latest
+          ports:
+            - containerPort: 8080
+          env:
+          - name: CLIENTES_SERVICE_URL
+            value: http://ms-clientes:80
+          - name: PRODUCTOS_SERVICE_URL
+            value: http://ms-productos:80
+          - name: PEDIDOS_SERVICE_URL
+            value: http://ms-pedidos:80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+

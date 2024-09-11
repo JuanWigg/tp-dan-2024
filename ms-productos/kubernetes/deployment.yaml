@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-productos
+  namespace: dan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-productos
+  template:
+    metadata:
+      labels:
+        app: ms-productos
+    spec:
+      containers:
+        - name: ms-productos
+          image: juanwigg/ms-productos-svc:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:postgresql://postgresql:5432/pg-dan
+          - name: SPRING_DATASOURCE_USERNAME
+            value: pguser
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: pgpassword
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: update
+          - name: SPRING_JPA_DATABASE_PLATFORM
+            value: org.hibernate.dialect.PostgreSQLDialect
+          - name: SPRING_RABBITMQ_HOST
+            value: dan-rabbitmq.messaging.svc.cluster.local
+          - name: SPRING_RABBITMQ_PORT
+            value: "5672"
+          - name: SPRING_RABBITMQ_USER
+            value: user
+          - name: SPRING_RABBITMQ_PASSWORD
+            value: 9BVojbQ1ZqoafPnp
+          - name: SPRING_INSTANCIA
+            value: ms-productos-svc-1

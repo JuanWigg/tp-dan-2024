@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-pedidos
+  namespace: dan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-pedidos
+  template:
+    metadata:
+      labels:
+        app: ms-pedidos
+    spec:
+      containers:
+        - name: ms-pedidos
+          image: juanwigg/ms-pedidos-svc:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          env:
+          - name: SPRING_DATA_MONGODB_HOST
+            value: mongodb-pedidos
+          - name: SPRING_DATA_MONGODB_PORT
+            value: "27017"
+          - name: SPRING_DATA_MONGODB_DATABASE
+            value: pedidosdb
+          - name: SPRING_DATA_MONGODB_USERNAME
+            value: root
+          - name: SPRING_DATA_MONGODB_PASSWORD
+            value: dan
+          - name: SPRING_DATA_MONGODB_URL
+            value: mongodb://root:dan@mongodb-pedidos:27017/pedidosdb?authSource=admin
+          - name: SPRING_RABBITMQ_HOST
+            value: dan-rabbitmq.messaging.svc.cluster.local
+          - name: SPRING_RABBITMQ_PORT
+            value: "5672"
+          - name: SPRING_RABBITMQ_USER
+            value: user
+          - name: SPRING_RABBITMQ_PASSWORD
+            value: 9BVojbQ1ZqoafPnp
+          - name: PRODUCTOS_BASE_URL
+            value: http://ms-productos:80/api
+          - name: CLIENTES_BASE_URL
+            value: http://ms-clientes:80/api
+
