@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: ms-productos
   namespace: dan
+  labels:
+    app: ms-productos
 spec:
   replicas: 1
   selector:
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ms-productos
-          image: juanwigg/ms-productos-svc:latest
+          image: juanwigg/ms-productos:v5
           ports:
             - containerPort: 8080
           resources:
@@ -43,3 +45,11 @@ spec:
             value: 9BVojbQ1ZqoafPnp
           - name: SPRING_INSTANCIA
             value: ms-productos-svc-1
+          - name: GRAYLOG_HOST
+            value: graylog-gelf-udp.logging.svc.cluster.local
+          - name: GRAYLOG_PORT
+            value: "12201"
+          - name: SPRING_ENABLE_TRACING
+            value: "true"
+          - name: ZIPKIN_ENDPOINT
+            value: http://zipkin.monitoring.svc.cluster.local:9411/api/v2/spans

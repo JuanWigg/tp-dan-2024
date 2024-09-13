@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: ms-pedidos
   namespace: dan
+  labels:
+    app: ms-pedidos
 spec:
   selector:
     app: ms-pedidos
   ports:
     - protocol: TCP
+      name: http
       port: 80
       targetPort: 8080

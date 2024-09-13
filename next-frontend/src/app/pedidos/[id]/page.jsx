@@ -6,6 +6,7 @@ import DeleteModal from '@/components/DeleteModal'
 import moment from 'moment';
 import 'moment/locale/es'
 import LoadingScreen from '@/components/LoadingScreen'
+import HistorialEstados from '@/components/HistorialEstados';
 
 function PedidoPage({ params }) {
     const router = useRouter()
@@ -22,6 +23,7 @@ function PedidoPage({ params }) {
             case "EN_PREPARACION":
                 return "text-yellow-500";
             case "ACEPTADO":
+            case "RECIBIDO":
                 return "text-blue-500";
             case "ENTREGADO":
                 return "text-green-500";
@@ -40,6 +42,8 @@ function PedidoPage({ params }) {
                 return "En preparación";
             case "ACEPTADO":
                 return "Aceptado";
+            case "RECIBIDO":
+                return "Recibido";
             case "ENTREGADO":
                 return "Entregado";
             default:
@@ -77,7 +81,7 @@ function PedidoPage({ params }) {
     if (isLoading) return <LoadingScreen />
 
     return (
-        <section className='p-4 max-w-7xl mx-auto bg-gray-900'>
+        <section className='p-4 max-w-7xl mx-auto bg-gray-900 min-h-screen h-full'>
             <div className='flex justify-between items-center bg-slate-800 rounded-lg p-4 mb-6'>
                 <h1 className='text-bold text-teal-400 text-3xl'>Pedido {pedido.numeroPedido} - {pedido.id}</h1>
                 <button className='bg-red-500 text-white px-4 py-2 rounded-md' onClick={handleDeletePedido}>
@@ -125,7 +129,10 @@ function PedidoPage({ params }) {
                 <p className='text-teal-500'><b className='text-slate-300'>Observaciones:</b> {pedido.observaciones || 'Sin observaciones'}</p>
                 <p className='text-teal-500'><b className='text-slate-300'>Total:</b> ${pedido.total}</p>
             </div>
-
+            <div className="bg-slate-700 rounded-lg p-4 mt-4">
+                <h3 className="text-2xl text-teal-400 font-semibold mb-4">Historial de Cambios</h3>
+                <HistorialEstados historialEstados={pedido.historialEstados} />
+            </div>
             <DeleteModal entidad='pedido' isOpen={deleteModalIsOpen} onDelete={() => onConfirmDelete(pedido)} onClose={onCancelDelete} />
         </section>
     )

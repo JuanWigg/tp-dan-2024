@@ -1,7 +1,7 @@
 package isi.dan.ms.pedidos.modelo;
 
 public enum EstadoPedido {
-    RECHAZADO, ACEPTADO, CANCELADO, EN_PREPARACION, ENTREGADO;
+    RECIBIDO, RECHAZADO, ACEPTADO, CANCELADO, EN_PREPARACION, ENTREGADO;
 
 
     public static boolean contains(String test) {

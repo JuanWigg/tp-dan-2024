@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: ms-gateway
   namespace: dan
+  labels:
+    app: ms-gateway
 spec:
   selector:
     app: ms-gateway
   ports:
     - protocol: TCP
+      name: http
       port: 80
       targetPort: 8080

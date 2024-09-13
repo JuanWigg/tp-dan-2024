@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: ms-pedidos
   namespace: dan
+  labels:
+    app: ms-pedidos
 spec:
   replicas: 1
   selector:
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ms-pedidos
-          image: juanwigg/ms-pedidos-svc:latest
+          image: juanwigg/ms-pedidos:v5
           ports:
             - containerPort: 8080
           resources:
@@ -47,4 +49,12 @@ spec:
             value: http://ms-productos:80/api
           - name: CLIENTES_BASE_URL
             value: http://ms-clientes:80/api
+          - name: GRAYLOG_HOST
+            value: graylog-gelf-udp.logging.svc.cluster.local
+          - name: GRAYLOG_PORT
+            value: "12201"
+          - name: SPRING_ENABLE_TRACING
+            value: "true"
+          - name: ZIPKIN_ENDPOINT
+            value: http://zipkin.monitoring.svc.cluster.local:9411/api/v2/spans
 

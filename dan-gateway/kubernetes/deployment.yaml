@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: ms-gateway
   namespace: dan
+  labels:
+    app: ms-gateway
 spec:
   replicas: 1
   selector:
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
         - name: ms-gateway
-          image: juanwigg/ms-gateway-svc:latest
+          image: juanwigg/ms-gateway:v3
           ports:
             - containerPort: 8080
           env:
@@ -25,8 +27,17 @@ spec:
             value: http://ms-productos:80
           - name: PEDIDOS_SERVICE_URL
             value: http://ms-pedidos:80
+          - name: GRAYLOG_HOST
+            value: graylog-gelf-udp.logging.svc.cluster.local
+          - name: GRAYLOG_PORT
+            value: "12201"
+          - name: SPRING_ENABLE_TRACING
+            value: "true"
+          - name: ZIPKIN_ENDPOINT
+            value: http://zipkin.monitoring.svc.cluster.local:9411/api/v2/spans
           resources:
             requests:
               cpu: 100m
               memory: 128Mi
+            
 

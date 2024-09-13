@@ -17,6 +17,7 @@ function PedidoItem({ pedido, onDelete, onEdit }) {
       case "EN_PREPARACION":
         return "text-yellow-500";
       case "ACEPTADO":
+      case "RECIBIDO":
         return "text-blue-500";
       case "ENTREGADO":
         return "text-green-500";
@@ -35,6 +36,8 @@ function PedidoItem({ pedido, onDelete, onEdit }) {
         return "En preparación";
       case "ACEPTADO":
         return "Aceptado";
+      case "RECIBIDO":
+        return "Recibido";
       case "ENTREGADO":
         return "Entregado";
       default:

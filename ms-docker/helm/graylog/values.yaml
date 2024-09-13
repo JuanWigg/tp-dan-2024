@@ -4,6 +4,21 @@ tags:
 graylog:
   persistence:
     size: 10Gi
+  input:
+    tcp:
+      service:
+        name: graylog-gelf-tcp
+        type: ClusterIP
+      ports:
+        - name: gelf
+          port: 12201
+    udp:
+      service:
+        name: graylog-gelf-udp
+        type: ClusterIP
+      ports:
+        - name: gelf
+          port: 12201
   resources:
     limits:
       cpu: "1"

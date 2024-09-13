@@ -1,7 +1,7 @@
 <configuration>
 
-    <property name="port" value="12201" />
-    <property name="host" value="graylog" />
+    <property name="port" value='${GRAYLOG_PORT}' />
+    <property name="host" value='${GRAYLOG_HOST}' />
     <springProperty name="instancia" source="dan.clientes.instancia" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

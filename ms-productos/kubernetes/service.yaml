@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: ms-productos
   namespace: dan
+  labels:
+    app: ms-productos
 spec:
   selector:
     app: ms-productos
   ports:
     - protocol: TCP
+      name: http
       port: 80
       targetPort: 8080
