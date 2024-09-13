@@ -1,0 +1,14 @@
+global:
+  postgresql:
+    auth:
+      username: "pguser"
+      password: "pgpassword"
+      database: "pg-dan"
+primary:
+  resources:
+    requests:
+      cpu: 150m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi

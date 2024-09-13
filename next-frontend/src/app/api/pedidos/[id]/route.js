@@ -15,3 +15,18 @@ export async function GET(request, { params }) {
     const data = await response.json()
     return NextResponse.json(data)
 }
+
+export async function PUT(request, { params }) {
+    const body = await request.json()
+    console.log("Actualizando pedido con id: ", params.id)
+    console.log(JSON.stringify(body))
+    const response = await fetch(`${process.env.GATEWAY_BASE_URL}/pedidos/${params.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+    const data = await response.json()
+    return NextResponse.json(data)
+}

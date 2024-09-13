@@ -1,12 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 
 function EditPedidoModal({ pedido, isOpen, onClose, onSave }) {
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState('ENTREGADO');
+  const [formData, setFormData] = useState(pedido);
+
+  useEffect(() => {
+    setFormData(pedido);
+  }, [pedido]);
 
   const handleChangeEstadoSeleccionado = (e) => {
-    setEstadoSeleccionado(e.target.value);
+    setFormData({ ...formData, estado: e.target.value });
   }
 
   if (!isOpen) return null;
@@ -33,7 +37,7 @@ function EditPedidoModal({ pedido, isOpen, onClose, onSave }) {
             </label>
             <select
               id="estado"
-              defaultValue={pedido.estado}
+              defaultValue="ENTREGADO"
               className="border border-gray-400 rounded p-2 w-full"
               onChange={handleChangeEstadoSeleccionado}
             >
@@ -41,14 +45,12 @@ function EditPedidoModal({ pedido, isOpen, onClose, onSave }) {
               <option value="CANCELADO">Cancelado</option>
             </select>
           </div>
-          {/* Agrega más campos según sea necesario */}
           <button
             type="button"
             className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={() => {
-              // Lógica para guardar los cambios
-              onSave(pedido); // Esta función puede recibir los valores editados
-              onClose(); // Cerrar modal después de guardar
+              onSave(formData);
+              onClose();
             }}
           >
             Guardar Cambios

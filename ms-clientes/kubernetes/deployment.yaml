@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-clientes
+  namespace: dan
+  labels:
+    app: ms-clientes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-clientes
+  template:
+    metadata:
+      labels:
+        app: ms-clientes
+    spec:
+      containers:
+        - name: ms-clientes
+          image: juanwigg/ms-clientes:v4
+          ports:
+            - containerPort: 8080
+          env:
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql:3306/dandb
+          - name: SPRING_DATASOURCE_USERNAME
+            value: danuser
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: danpassword
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: update
+          - name: SPRING_JPA_DATABASE_PLATFORM
+            value: org.hibernate.dialect.MySQL8Dialect
+          - name: SPRING_RABBITMQ_HOST
+            value: dan-rabbitmq.messaging.svc.cluster.local
+          - name: SPRING_RABBITMQ_PORT
+            value: "5672"
+          - name: SPRING_INSTANCIA
+            value: ms-clientes-svc-1
+          - name: GRAYLOG_HOST
+            value: graylog-gelf-udp.logging.svc.cluster.local
+          - name: GRAYLOG_PORT
+            value: "12201"
+          - name: SPRING_ENABLE_TRACING
+            value: "true"
+          - name: ZIPKIN_ENDPOINT
+            value: http://zipkin.monitoring.svc.cluster.local:9411/api/v2/spans
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi

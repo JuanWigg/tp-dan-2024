@@ -14,7 +14,7 @@ function CreateProductoModal({isOpen, onClose, onSave}) {
     const [categorias, setCategorias] = useState([]);
 
     useEffect(() => {
-        fetch('/api/categorias')
+        fetch('/api/categorias', { cache: 'no-cache'})
             .then((res) => res.json())
             .then((data) => {
                 setCategorias(data);

@@ -74,6 +74,13 @@ public class PedidoService {
         pedido.setTotal(pedido.getDetalle().stream().map(DetallePedido::getTotal).reduce((a, b) -> a.add(b)).orElse(null));
 
         pedido.setHistorialEstados(new ArrayList<HistorialEstado>());
+        HistorialEstado primerHistorial = new HistorialEstado();
+        primerHistorial.setEstado(EstadoPedido.RECIBIDO);
+        primerHistorial.setFechaEstado(Instant.now());
+        primerHistorial.setUserEstado(pedido.getUsuario());
+        primerHistorial.setDetalle("Pedido recibido en el sistema");
+        pedido.getHistorialEstados().add(primerHistorial);
+
         HistorialEstado historial = new HistorialEstado();
         historial.setUserEstado(pedido.getUsuario());
 

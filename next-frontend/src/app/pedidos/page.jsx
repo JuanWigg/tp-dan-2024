@@ -20,7 +20,7 @@ function PedidosPage() {
   const [filters, setFilters] = useState({ cliente: '', estado: '' })
 
 
-  const estadosPedido = ['Cualquiera', 'Aceptado', 'En preparacion', 'Entregado', 'Cancelado', 'Rechazado'];
+  const estadosPedido = ['Cualquiera', 'Recibido', 'Aceptado', 'En preparacion', 'Entregado', 'Cancelado', 'Rechazado'];
   const [estadoSeleccionado, setEstadoSeleccionado] = useState(estadosPedido[0]);
 
   const handleEstadoChange = (e) => {
@@ -56,7 +56,18 @@ function PedidosPage() {
 
   const onSaveEditModal = (pedido) => {
     console.log('Pedido editado: ', pedido)
-    setEditModalIsOpen(false)
+    fetch(`/api/pedidos/${pedido.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pedido)
+    }).then((res) => res.json())
+      .then((data) => {
+        const pedidosActualizados = pedidos.map((p) => p.id === data.id ? data : p)
+        setPedidos(pedidosActualizados)
+        setEditModalIsOpen(false)
+    })
   }
 
   const onDeletePedido = (idPedido) => {
